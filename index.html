@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Stat & Graph Tools</title>
+<style>
+  body { font-family: Arial; background-color: #fdfefe; margin:0; }
+  h2 { color: #15B19A; text-align:center; padding:20px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 항상 4열  #15B19A   */
+    gap: 15px;
+    padding: 20px;
+  }
+  .tile-box {
+    background-color: #15B19A;
+    border: 1px solid #ccc;
+    text-align: center;
+    cursor: pointer;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .tile-box:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  .tile-title {
+    height: 15%;
+    color: #FDFEFE;
+    font-weight: bold;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .tile-img {
+    width: 95%;
+    height: 80%;
+    object-fit: contain;
+    margin: auto;
+  }
+  #viewer {
+    display:none;
+    width:100%;
+    height:100vh;
+    flex-direction: column;
+  }
+  #viewer iframe {
+    flex:1;
+    width:100%;
+    border:none;
+  }
+  #backBtn {
+    background:#FDFEFE;
+    color:#15B19A;
+    border:1px solid #15B19A;
+    border-radius:8px;
+    font-size:18px;
+    font-weight:bold;
+    padding:10px 20px;
+    margin:10px;
+    cursor:pointer;
+    align-self:flex-end;
+  }
+</style>
+</head>
+<body>
+
+<h2 id="mainTitle">Stat & Graph Tools</h2>  
+
+<div id="grid" class="grid"></div>
+
+<div id="viewer">
+  <button id="backBtn">🏠 Show List of Stat & Graph Tools</button>   
+  <iframe id="appFrame"></iframe>
+</div>
+
+<script>
+const apps = [
+  { name:"Boxplot and jitter plot", url:"https://play192.shinyapps.io/jitterboxplot4HP/", img:"https://www.cisejournal.org/image/graphic_tool/tool1.png" },
+  { name:"Plot with error bar (1)", url:"https://play191.shinyapps.io/error_bar4CIOS/", img:"https://www.cisejournal.org/image/graphic_tool/tool5.png" },
+  { name:"Plot with error bar (2)", url:"https://play191.shinyapps.io/Pubr_error_bar4CIOS/", img:"https://www.cisejournal.org/image/graphic_tool/tool19.png" },
+  { name:"Plot with significance", url:"https://play193.shinyapps.io/Plot_Significance4HP/", img:"https://www.cisejournal.org/image/graphic_tool/tool20.png" },
+  { name:"Densitogram and Histogram", url:"https://kjh114.shinyapps.io/densitogram-histogram/", img:"https://www.cisejournal.org/image/graphic_tool/tool24.png" },
+  { name:"ROC pretty", url:"https://play192.shinyapps.io/ROC_pretty/", img:"https://www.cisejournal.org/image/graphic_tool/tool8.png" },
+  { name:"Kaplan-Meier curve", url:"https://play192.shinyapps.io/survival4HP/", img:"https://www.cisejournal.org/image/graphic_tool/tool2.svg" },
+  { name:"LOWESS", url:"https://play192.shinyapps.io/LOWESS4HP/", img:"https://www.cisejournal.org/image/graphic_tool/tool7.png" }
+];
+
+// 타일 생성
+const grid = document.getElementById("grid");
+apps.forEach(app => {
+  const tile = document.createElement("div");
+  tile.className = "tile-box";
+  tile.onclick = () => {
+    document.getElementById("grid").style.display="none";
+    document.getElementById("viewer").style.display="flex";
+    document.getElementById("appFrame").src = app.url;
+    document.getElementById("mainTitle").style.display="none"; // 제목 숨기기
+  };
+  const title = document.createElement("div");
+  title.className = "tile-title";
+  title.textContent = app.name;
+  const img = document.createElement("img");
+  img.className = "tile-img";
+  img.src = app.img;
+  tile.appendChild(title);
+  tile.appendChild(img);
+  grid.appendChild(tile);
+});
+
+// 돌아가기 버튼
+document.getElementById("backBtn").onclick = () => {
+  document.getElementById("viewer").style.display="none";
+  document.getElementById("grid").style.display="grid";
+  document.getElementById("appFrame").src="";
+  document.getElementById("mainTitle").style.display="block"; // 제목 다시 보이기
+};
+</script>
+
+</body>
+</html>
