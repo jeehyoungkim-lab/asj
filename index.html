@@ -4,44 +4,70 @@
 <meta charset="UTF-8">
 <title>Stat & Graph Tools</title>
 <style>
-  body { font-family: Arial; background-color: #fdfefe; margin:0; }
-  h2 { color: #15B19A; text-align:center; padding:20px; }
+  /* 전체 레이아웃 기본 */
+  html, body { height: 100%; }
+  body { font-family: Arial, sans-serif; background-color: #fdfefe; margin:0; overflow-x: hidden; }
+
+  /* 제목 #15B19A */
+  h2 { color: #15B19A; text-align:center; padding:20px; margin:0; }
+
+  /* 4열 고정 + 화면에 맞춰 타일 자동 축소 */
   .grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 항상 4열  #15B19A   */
+    grid-template-columns: repeat(4, minmax(0, 1fr)); /* 항상 4열, 각 열은 컨테이너 폭 내에서 균등 분할 */
     gap: 15px;
     padding: 20px;
+    box-sizing: border-box;
+    max-width: 100%;
   }
+
+  /* 타일: 정사각형 비율 유지, 내부는 세로 플렉스 */
   .tile-box {
     background-color: #15B19A;
     border: 1px solid #ccc;
-    text-align: center;
     cursor: pointer;
-    aspect-ratio: 1 / 1;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    aspect-ratio: 1 / 1;        /* 타일은 항상 정사각형 */
+    box-sizing: border-box;
   }
   .tile-box:hover {
     transform: scale(1.03);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   }
+
+  /* 제목 영역: 고정 높이 */
   .tile-title {
-    height: 15%;
+    flex: 0 0 40px;
     color: #FDFEFE;
     font-weight: bold;
     font-size: 16px;
-    display: flex;
+   display: flex;
     align-items: center;
     justify-content: center;
   }
-  .tile-img {
-    width: 95%;
-    height: 80%;
-    object-fit: contain;
-    margin: auto;
+
+  /* 이미지 영역 래퍼: 남은 공간 전부 */
+  .tile-img-wrap {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    box-sizing: border-box;
+    overflow: hidden;
   }
+
+  /* 이미지: 타일 크기에 맞춰 강제 조정 (비율 무시) */
+  .tile-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;    /* 비율 유지하지 않고 늘이거나 줄임 */
+  }
+
+  /* 뷰어(iframe) 영역 */
   #viewer {
     display:none;
     width:100%;
@@ -69,25 +95,25 @@
 </head>
 <body>
 
-<h2 id="mainTitle">Stat & Graph Tools</h2>  
+<h2 id="mainTitle">Stat & Graph Tools</h2>
 
 <div id="grid" class="grid"></div>
 
 <div id="viewer">
-  <button id="backBtn">🏠 Show List of Stat & Graph Tools</button>   
+  <button id="backBtn">🏠 Show List of Stat & Graph Tools</button>
   <iframe id="appFrame"></iframe>
 </div>
 
 <script>
 const apps = [
-  { name:"Boxplot and jitter plot", url:"https://play192.shinyapps.io/jitterboxplot4HP/", img:"https://www.cisejournal.org/image/graphic_tool/tool1.png" },
-  { name:"Plot with error bar (1)", url:"https://play191.shinyapps.io/error_bar4CIOS/", img:"https://www.cisejournal.org/image/graphic_tool/tool5.png" },
-  { name:"Plot with error bar (2)", url:"https://play191.shinyapps.io/Pubr_error_bar4CIOS/", img:"https://www.cisejournal.org/image/graphic_tool/tool19.png" },
-  { name:"Plot with significance", url:"https://play193.shinyapps.io/Plot_Significance4HP/", img:"https://www.cisejournal.org/image/graphic_tool/tool20.png" },
-  { name:"Densitogram and Histogram", url:"https://kjh114.shinyapps.io/densitogram-histogram/", img:"https://www.cisejournal.org/image/graphic_tool/tool24.png" },
-  { name:"ROC pretty", url:"https://play192.shinyapps.io/ROC_pretty/", img:"https://www.cisejournal.org/image/graphic_tool/tool8.png" },
-  { name:"Kaplan-Meier curve", url:"https://play192.shinyapps.io/survival4HP/", img:"https://www.cisejournal.org/image/graphic_tool/tool2.svg" },
-  { name:"LOWESS", url:"https://play192.shinyapps.io/LOWESS4HP/", img:"https://www.cisejournal.org/image/graphic_tool/tool7.png" }
+ { name:"Boxplot and jitter plot", url:"https://play200.shinyapps.io/jitterboxplot4/", img:"https://www.cisejournal.org/image/graphic_tool/tool1.png" },
+ { name:"Plot with error bar (1)", url:"https://play201.shinyapps.io/error_bar4CIOS/", img:"https://www.cisejournal.org/image/graphic_tool/tool5.png" },
+ { name:"Plot with error bar (2)", url:"https://play202.shinyapps.io/Pubr_error_bar4CIOS/", img:"https://www.cisejournal.org/image/graphic_tool/tool19.png" },
+ { name:"Plot with significance", url:"https://play203.shinyapps.io/Plot_Significance4/", img:"https://www.cisejournal.org/image/graphic_tool/tool20.png" },
+ { name:"Densitogram and Histogram", url:"https://play204.shinyapps.io/densitogram-histogram/", img:"https://www.cisejournal.org/image/graphic_tool/tool24.png" },
+ { name:"ROC pretty", url:"https://play205.shinyapps.io/ROC4/", img:"https://www.cisejournal.org/image/graphic_tool/tool8.png" },
+ { name:"Kaplan-Meier curve", url:"https://play206.shinyapps.io/survival4/", img:"https://www.cisejournal.org/image/graphic_tool/tool2.svg" },
+ { name:"LOWESS", url:"https://play207.shinyapps.io/LOWESS4/", img:"https://www.cisejournal.org/image/graphic_tool/tool7.png" }
 ];
 
 // 타일 생성
@@ -96,28 +122,35 @@ apps.forEach(app => {
   const tile = document.createElement("div");
   tile.className = "tile-box";
   tile.onclick = () => {
-    document.getElementById("grid").style.display="none";
-    document.getElementById("viewer").style.display="flex";
+    document.getElementById("grid").style.display = "none";
+    document.getElementById("viewer").style.display = "flex";
     document.getElementById("appFrame").src = app.url;
-    document.getElementById("mainTitle").style.display="none"; // 제목 숨기기
+    document.getElementById("mainTitle").style.display = "none"; // 제목 숨기기
   };
+
   const title = document.createElement("div");
   title.className = "tile-title";
   title.textContent = app.name;
+
+  const wrap = document.createElement("div");
+  wrap.className = "tile-img-wrap";
+
   const img = document.createElement("img");
   img.className = "tile-img";
   img.src = app.img;
+
+  wrap.appendChild(img);
   tile.appendChild(title);
-  tile.appendChild(img);
+  tile.appendChild(wrap);
   grid.appendChild(tile);
 });
 
 // 돌아가기 버튼
 document.getElementById("backBtn").onclick = () => {
-  document.getElementById("viewer").style.display="none";
-  document.getElementById("grid").style.display="grid";
-  document.getElementById("appFrame").src="";
-  document.getElementById("mainTitle").style.display="block"; // 제목 다시 보이기
+  document.getElementById("viewer").style.display = "none";
+  document.getElementById("grid").style.display = "grid";
+  document.getElementById("appFrame").src = "";
+  document.getElementById("mainTitle").style.display = "block"; // 제목 다시 보이기
 };
 </script>
 
